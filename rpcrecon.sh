@@ -77,11 +77,12 @@ On_White='\033[47m'     # Background White
 declare -r tmp_file="/dev/shm/tmp_file"
 declare -r tmp_file2="/dev/shm/tmp_file2"
 declare -r tmp_file3="/dev/shm/tmp_file3"
+VERSION=1.0.1
 
 trap ctrl_c INT
 
 function ctrl_c(){
-    echo -e "\n${LBlue}[${BYellow}!${LBlue}]${BYellow} Saliendo...\n"
+    echo -e "\n${LBlue}[${BYellow}!${LBlue}]${BYellow} Saliendo...${Color_Off}\n"
     rm $tmp_file 2>/dev/null
     tput cnorm
     exit 1
@@ -90,17 +91,18 @@ function ctrl_c(){
 function helpPanel(){
     banner
 	echo -e "\n${LBlue}[${BBlue}*${LBlue}]${BWhite} Uso: rpcrecon${Color_Off}"
-	echo -e "\n\t${BPurple}-e|--enumeration :${BYellow} Modo de Enumeración${Color_Off}"
+	echo -e "\n\t${BPurple}-e | --enumeration :${BYellow} Modo de Enumeración${Color_Off}"
 	echo -e "\n\t\t${BGreen}Users${Green} (Usuarios del Dominio)${Color_Off}"
 	echo -e "\t\t${BGreen}UsersInfo${Green} (Usuarios del Dominio con descripciones)${Color_Off}"
 	echo -e "\t\t${BGreen}Admins ${Green}(Usuarios Administradores del Dominio)${Color_Off}"
 	echo -e "\t\t${BGreen}Groups ${Green}(Grupos del Dominio)${Color_Off}"
     echo -e "\t\t${BGreen}Domains ${Green}(Listar los Dominios en la red)${Color_Off}"
 	echo -e "\t\t${BGreen}All ${Green}(Todos los modos)${Color_Off}"
-	echo -e "\n\t${BPurple}-i|--ip :${BYellow} Dirección IP del Host${Color_Off}"
-    echo -e "\n\t${BPurple}-u|--username :${BYellow} Usuario (en caso de requerirlo)${Color_Off}"
-    echo -e "\n\t${BPurple}-p|--password :${BYellow} Password (en caso de requerirlo)${Color_Off}"
-	echo -e "\n\t${BPurple}-h|--help :${BYellow} Mostrar este panel de ayuda${Color_Off}"
+	echo -e "\n\t${BPurple}-i | --ip :${BYellow} Dirección IP del Host${Color_Off}"
+    echo -e "\n\t${BPurple}-u | --username :${BYellow} Usuario (en caso de requerirlo)${Color_Off}"
+    echo -e "\n\t${BPurple}-p | --password :${BYellow} Password (en caso de requerirlo)${Color_Off}"
+    echo -e "\n\t${BPurple}--update :${BYellow} Actualizar la aplicación${Color_Off}"
+	echo -e "\n\t${BPurple}-h | --help :${BYellow} Mostrar este panel de ayuda${Color_Off}\n"
 	exit 1
 }
 
@@ -111,6 +113,54 @@ function banner(){
     echo -e "\t${BBlue}║╔╗╔╝║╔══╝║║ ╔╗${Green}║╔╗╔╝║╔╗║║╔═╝║╔╗║║╔╗╗${Color_Off}"
     echo -e "\t${BBlue}║║║╚╗║║   ║╚═╝║${Green}║║║╚╗║║═╣║╚═╗║╚╝║║║║║${Color_Off} ${IWhite}By @m4lal0${Color_Off}"
     echo -e "\t${BBlue}╚╝╚═╝╚╝   ╚═══╝${Green}╚╝╚═╝╚══╝╚══╝╚══╝╚╝╚╝${Color_Off}\n"
+}
+
+function checkUpdate(){
+    GIT=$(curl --silent https://github.com/m4lal0/RPCrecon/blob/main/rpcrecon.sh | grep 'VERSION=' | cut -d">" -f2 | cut -d"<" -f1 | cut -d"=" -f 2)
+    if [[ "$GIT" == "$VERSION" || -z $GIT ]]; then
+        echo -e "${BGreen}[✔]${Color_Off} ${BGreen}La versión actual es la más reciente.${Color_Off}\n"
+        tput cnorm; exit 0
+    else
+        echo -e "${Yellow}[*]${Color_Off} ${IWhite}Actualización disponible${Color_Off}"
+        echo -e "${Yellow}[*]${Color_Off} ${IWhite}Actualización de la versión${Color_Off} ${BWhite}$VERSION${Color_Off} ${IWhite}a la${Color_Off} ${BWhite}$GIT${Color_Off}"
+        update="1"
+    fi
+}
+
+function installUpdate(){
+    echo -en "${Yellow}[*]${Color_Off} ${IWhite}Instalando actualización...${Color_Off}"
+    wget https://raw.githubusercontent.com/m4lal0/RPCrecon/main/rpcrecon.sh &>/dev/null
+    chmod +x rpcrecon.sh &>/dev/null
+    mv rpcrecon.sh /usr/local/bin/rpcrecon &>/dev/null
+    if [ "$(echo $?)" == "0" ]; then
+        echo -e "${BGreen}[ OK ]${Color_Off}"
+    else
+        echo -e "${BRed}[ FAIL ]${Color_Off}"
+        tput cnorm && exit 1
+    fi
+    echo -e "\n${BGreen}[✔]${Color_Off} ${IGreen}Versión actualizada a${Color_Off} ${BWhite}$GIT${Color_Off}\n"
+    tput cnorm && exit 0
+}
+
+function update(){
+    banner
+    echo -e "${BBlue}[+]${Color_Off} ${BWhite}rpcrecon Versión $VERSION${Color_Off}"
+    echo -e "${BBlue}[+]${Color_Off} ${BWhite}Verificando actualización de rpcrecon${Color_Off}"
+    checkUpdate
+    echo -e "\t${BWhite}$VERSION ${IWhite}Versión Instalada${Color_Off}"
+    echo -e "\t${BWhite}$GIT ${IWhite}Versión en Git${Color_Off}\n"
+    if [ "$update" != "1" ]; then
+        tput cnorm && exit 0;
+    else
+        echo -e "${BBlue}[+]${Color_Off} ${BWhite}Necesita actualizar!${Color_Off}"
+        tput cnorm
+        echo -en "${BPurple}[?]${Color_Off} ${BCyan}Quiere actualizar? (${BGreen}Y${BCyan}/${BRed}n${BCyan}):${Color_Off} " && read CONDITION
+        tput civis
+        case "$CONDITION" in
+            n|N) echo -e "\n${LBlue}[${BYellow}!${LBlue}] ${BRed}No se actualizo, se queda en la versión ${BWhite}$VERSION${Color_Off}\n" && tput cnorm && exit 0;;
+            *) installUpdate;;
+        esac
+    fi
 }
 
 function printTable(){
@@ -454,6 +504,7 @@ for arg; do
         --ip)	        args="${args}-i";;
         --username)	    args="${args}-u";;
         --password)	    args="${args}-p";;
+        --update)	    update;;
 		--help)	        args="${args}-h";;
 		*) [[ "${arg:0:1}" == "-" ]] || delim="\""
         args="${args}${delim}${arg}${delim} ";;
