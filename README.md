@@ -23,8 +23,8 @@ Esta utilidad nos permitirá obtener la siguiente información de un Dominio:
 ## Instalación
 
 ```
-git clone https://github.com/m4lal0/RPCrecon
-cd RPCrecon && chmod +x rpcrecon.sh
+wget https://raw.githubusercontent.com/m4lal0/RPCrecon/main/rpcrecon.sh
+chmod +x rpcrecon.sh && mv rpcrecon.sh /usr/local/bin/rpcrecon
 ```
 
 ## ¿Cómo usar la herramienta?
