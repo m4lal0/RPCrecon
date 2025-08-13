@@ -47,28 +47,27 @@ Al ejecutar la herramienta nos muestra el Panel de Ayuda
         ║║║╚╗║║   ║╚═╝║║║║╚╗║║═╣║╚═╗║╚╝║║║║║ By @m4lal0
         ╚╝╚═╝╚╝   ╚═══╝╚╝╚═╝╚══╝╚══╝╚══╝╚╝╚╝
 
-
-uso: rpcrecon [-h] -e MODE -t TARGET [-u USERNAME] [-p PASSWORD] [-o FORMAT] [-n] [-v] [--update]
+uso: rpcrecon [-h] -e MODE -i IP [-u USERNAME] [-p PASSWORD] [-o {txt,json,grep,html,all}] [-n] [-v] [--update]
 
 Opciones:
   -e, --enumeration  Modo de enumeración: 
-                     Users        Listar usuarios del dominio
-                     UsersInfo    Usuarios con descripciones
-                     Admins       Usuarios administradores
-                     Groups       Grupos del dominio
-                     GroupsMember Grupos del dominio y sus usuarios
-                     MembersGroup Usuarios y sus grupos de dominio
-                     Domains      Listar dominios en la red
-                     RIDCycling   Enumeración de usuarios mediante RIDs
-                     All          Todos los modos
-  -t, --target       Dirección IP o nombre del host
-  -u, --username     Nombre de usuario (si es requerido)
-  -p, --password     Contraseña del usuario (si es requerido)
-  -o, --output       Formato de salida {txt, json, grep, html ó all}
-  -n, --no-print     No mostrar resultados en pantalla (requiere -o)
-  -v, --version      Mostrar la versión instalada
-  --update           Actualizar la aplicación
-  -h, --help         Mostrar este panel de ayuda
+                     Users        Listar usuarios del dominio.
+                     UsersInfo    Usuarios con descripciones.
+                     Admins       Usuarios administradores.
+                     Groups       Grupos del dominio.
+                     GroupsMember Grupos del dominio y sus usuarios.
+                     MembersGroup Usuarios y sus grupos de dominio.
+                     Domains      Listar dominios en la red.
+                     RIDCycling   Enumeración de usuarios mediante RIDs.
+                     All          Todos los modos.
+  -i, --ip.          Dirección IP o nombre del host.
+  -u, --username     Nombre de usuario (si es requerido).
+  -p, --password     Contraseña del usuario (si es requerido).
+  -o, --output       Formato de salida {txt, json, grep, html ó all}.
+  -n, --no-print     No mostrar resultados en pantalla (requiere -o).
+  -v, --version      Mostrar la versión instalada.
+  --update           Actualizar la aplicación.
+  -h, --help         Mostrar este panel de ayuda.
 
 ```
 
